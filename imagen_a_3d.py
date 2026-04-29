@@ -30,7 +30,14 @@ def parse_args():
     parser.add_argument(
         "imagen",
         metavar="IMAGEN",
+        nargs="?",
         help="Imagen de entrada (.png, .jpg)",
+    )
+    parser.add_argument(
+        "--solo-blender",
+        metavar="MESH",
+        default=None,
+        help="Regenerar solo el script de Blender sobre un mesh existente (.obj o .glb), sin reprocesar la imagen",
     )
     parser.add_argument(
         "--output-dir", "-o",
@@ -104,6 +111,22 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    if args.solo_blender:
+        mesh_path = os.path.abspath(args.solo_blender)
+        if not os.path.exists(mesh_path):
+            print(f"Error: no se encontró el mesh '{mesh_path}'")
+            sys.exit(1)
+        texture = os.path.abspath(args.texture) if args.texture else ""
+        blender_script = create_blender_script(mesh_path=mesh_path, custom_texture=texture)
+        print(f"Script de Blender regenerado: {blender_script}")
+        print("\nPara abrir en Blender ejecutá:")
+        print(f"  blender --python {blender_script}")
+        return
+
+    if not args.imagen:
+        print("Error: se requiere una imagen o --solo-blender MESH")
+        sys.exit(1)
 
     image_path = os.path.abspath(args.imagen)
     if not os.path.exists(image_path):

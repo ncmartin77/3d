@@ -33,6 +33,25 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
 bpy.ops.object.location_clear()
 {texture_block}
+# Suavizado del mesh
+for obj in bpy.context.selected_objects:
+    if obj.type == 'MESH':
+        bpy.context.view_layer.objects.active = obj
+
+        # Shade smooth (sombreado sin coste)
+        bpy.ops.object.shade_smooth()
+
+        # Smooth corrective: suaviza irregularidades del marching cubes
+        smooth = obj.modifiers.new(name="Smooth", type='SMOOTH')
+        smooth.factor = 0.5
+        smooth.iterations = 5
+
+        # Subdivision Surface nivel 1: nivel 2+ causa OOM con mesh de 384 (~500K tris)
+        subsurf = obj.modifiers.new(name="Subdivision", type='SUBSURF')
+        subsurf.subdivision_type = 'CATMULL_CLARK'
+        subsurf.levels = 1
+        subsurf.render_levels = 1
+
 print("Modelo importado correctamente.")
 """
 
