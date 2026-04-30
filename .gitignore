@@ -1,10 +1,14 @@
 __pycache__/
 *.pyc
 
-# Output anterior (reemplazado por output_3d_512)
+# Outputs generados (regenerables con los scripts)
 output_3d/
+output_3d_*/
+output_3d_512/
 
 # Archivos no relacionados con el proyecto 3D
 escritura.pdf
 salida.pdf
 2026-04-23_14-49.png
+2026-04-29_13-27.png
+proyectos/
